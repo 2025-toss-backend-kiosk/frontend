@@ -25,10 +25,13 @@
   margin: 0 auto;
 }
 
+.header {
+  margin-top: 60px;
+}
 .login-title {
   font-size: 20px;
   font-weight: bold;
-  margin:45px 0 30px 140px;
+  margin:0 0 30px 140px;
 }
 .text-login {
   font-size: 12px;
@@ -326,4 +329,73 @@ input[type="checkbox"] {
   width: 55px;
   height: auto;
   margin: 15px 0 0 170px;
+}
+
+.option-image {
+  width: 95px;
+  margin: 110px 0 0 150px;
+}
+.option-name {
+text-align: center;
+font-size: 22px;
+}
+.option-description {
+  text-align: center;
+  font-size: 15px;
+  margin-bottom: 40px;
+}
+.option-amount-row,
+.option-total,
+.option-extra {
+  border: none;
+  width: 370px;
+  height: 60px;
+  margin-left: 10px;
+  margin-bottom: 15px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+.price {
+  margin-left: 165px;
+}
+.price-total {
+    display: inline-block;
+    margin: 20px;
+}
+.price-highlight {
+    margin-left: 195px;
+    color: #ED7331;
+    font-weight: bold;
+}
+.plus-option{
+  display: inline-block;
+  font-size: 16px;
+  font-weight: bold;
+  margin: 20px;
+}
+.plus-option2{
+  display: inline-block;
+  margin-left: 240px;
+}
+.small-yellow-btn,
+.small-orange-btn {
+  width:170px;
+  height: 60px;
+  padding: 16px;
+  border: none;
+  border-radius: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  display: block;
+  color: white;
+}
+.small-yellow-btn {
+  display: inline-block;
+  background-color: #FFDC00;
+  margin: 50px 0 0 20px;
+}
+.small-orange-btn {
+  display: inline-block;
+  background-color: #ED7331;
+  margin-left: 10px;
 }

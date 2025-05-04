@@ -31,29 +31,31 @@ const MegaOption: React.FC = () => {
       <div className="option-amount-row">
         <button onClick={decrease} 
         style={{
-          border: '1px soilid #BDBDBD',
-          borderRadius: '50px'}}>➖</button>
+          border: 'none',
+          borderRadius: '50px',
+          margin: '22px'}}>➖</button>
         <span>{count}</span>
         <button onClick={increase} 
          style={{
-          border: '1px soilid #BDBDBD',
-          borderRadius: '50px'}}>➕</button>
+          border: 'none',
+          borderRadius: '50px',
+          margin: '22px'}}>➕</button>
         <span className="price">{unitPrice}</span>
       </div>
 
       <div className="option-total">
-        <span>총 상품금액</span>
-        <span className="price-highlight">{totalPrice.toLocaleString()}원</span>
+        <span className="price-total">총 상품금액</span>
+        <span className="price-highlight">{totalPrice.toLocaleString()}</span>
       </div>
 
       <div className="option-extra" onClick={() => navigate("/options")}>
-        <span>추가 옵션</span>
-        <span>〉</span>
+        <span className="plus-option">추가 옵션</span>
+        <span className="plus-option2">〉</span>
       </div>
 
       <div className="option-buttons">
-        <button className="yellow-btn">주문하기</button>
-        <button className="orange-btn">장바구니 담기</button>
+        <button className="small-yellow-btn">주문하기</button>
+        <button className="small-orange-btn">장바구니 담기</button>
       </div>
     </div>
   );

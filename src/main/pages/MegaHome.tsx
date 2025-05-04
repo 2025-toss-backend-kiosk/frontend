@@ -12,6 +12,7 @@ import smorecookie from "../images/mega_choco.png";
 import megacup from "../images/mega_cup.png";
 
 type ProductItem = {
+  id: string;
   name: string;
   price: number;
   image: string;
@@ -24,16 +25,16 @@ type ProductData = {
 
 const productData: ProductData = {
   coffee: [
-    { name: '아메리카노', price: 1500, image: americano }
+    { id: 'americano', name: '아메리카노', price: 1500, image: americano }
   ],
   noncoffee: [
-    { name: '쿠키 프라페', price: 2200, image: cookiefrappe },
-    { name: '허니자몽블랙티', price: 3700, image: honeyblack, soldout: true }
+    { id: 'cookiefrappe', name: '쿠키 프라페', price: 2200, image: cookiefrappe },
+    { id: 'honeyblack', name: '허니자몽블랙티', price: 3700, image: honeyblack, soldout: true }
   ],
   dessert: [
-    { name: '햄앤치즈샌드', price: 2000, image: hamncheese },
-    { name: '마카다미아 쿠키', price: 2000, image: macadamia, soldout: true },
-    { name: '초코스모어쿠키', price: 2900, image: smorecookie }
+    { id: 'hamncheese', name: '햄앤치즈샌드', price: 2000, image: hamncheese },
+    { id: 'macadamia', name: '마카다미아 쿠키', price: 2000, image: macadamia, soldout: true },
+    { id: 'smorecookie', name: '초코스모어쿠키', price: 2900, image: smorecookie }
   ],
   md: []
 };
@@ -73,7 +74,7 @@ const MegaHome: React.FC = () => {
               <div
                 key={i}
                 className={`product-card ${item.soldout ? 'sold-out' : ''}`}
-                onClick={() => !item.soldout && navigate('/option')}
+                onClick={() => !item.soldout && navigate(`/option/${item.id}`)}
               >
                 <img src={item.image} alt={item.name} className="product-image" />
                 {item.soldout && <div className="sold-label">일시품절</div>}
@@ -93,3 +94,4 @@ const MegaHome: React.FC = () => {
 };
 
 export default MegaHome;
+  

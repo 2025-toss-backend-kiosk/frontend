@@ -15,7 +15,8 @@ const BackIcon: React.FC = () => {
         position: 'absolute',
         top: '50px',
         width: '15px', 
-        height: '18px', 
+        height: '18px',
+        marginTop: '10px', 
         marginLeft: '30px' 
       }} // 너가 원하는 스타일로 수정
     />

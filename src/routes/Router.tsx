@@ -15,6 +15,7 @@ export default function AppRouter() {
         <Route path="/" element={<MegaFirstLogin />} />
         <Route path="/login" element={<MegaLogin />} />
         <Route path="/option" element={<MegaOption />} />
+        <Route path="/option/:menuId" element={<MegaOption />} />
       </Routes>
     </BrowserRouter>
   );

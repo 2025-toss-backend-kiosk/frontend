@@ -162,7 +162,7 @@ const MegaLogin: React.FC = () => {
           <div className='lookup4'>전문보기</div>
         </div>
       </div>
-      <button className="big-black-btn" type="button" onClick={() => navigate("/ome")}>
+      <button className="big-black-btn" type="button" onClick={() => navigate("/home")}>
         로그인/회원가입
       </button>
     </div>

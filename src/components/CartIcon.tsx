@@ -17,7 +17,7 @@ const CartIcon: React.FC = () => {
         right: '225px',
         width: '30px', 
         height: '25px', 
-        marginRight: '20px' 
+        marginRight: '30px' 
       }} // 너가 원하는 스타일로 수정
     />
   );
