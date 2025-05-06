@@ -1,21 +1,36 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import MegaHome from '../main/pages/MegaHome';
-import MegaFirstLogin from '../main/pages/MegaFirstLogin';
-import MegaLogin from '../main/pages/MegaLogin';
-import MegaOption from '../main/pages/MegaOption';
-
+// src/routes/Router.tsx
+import React from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import MegaHome from "../main/pages/MegaHome";
+import MegaFirstLogin from "../main/pages/MegaFirstLogin";
+import MegaLogin from "../main/pages/MegaLogin";
+import MegaOption from "../main/pages/MegaOption";
+import MegaCart from "../main/pages/MegaCart";       // 🆕 장바구니 페이지
+import PaymentPage from "../main/pages/PaymentPage";
 
 export default function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/home" element={<MegaHome />} />
+        {/* ───────── 로그인 플로우 ───────── */}
+        <Route path="/"         element={<MegaFirstLogin />} />
+        <Route path="/login"    element={<MegaLogin />} />
+
+        {/* ───────── 카테고리 메뉴 ───────── */}
+        <Route path="/home"         element={<Navigate to="/menu/coffee" replace />} />
         <Route path="/menu/:category" element={<MegaHome />} />
-        <Route path="/" element={<MegaFirstLogin />} />
-        <Route path="/login" element={<MegaLogin />} />
-        <Route path="/option" element={<MegaOption />} />
-        <Route path="/option/:menuId" element={<MegaOption />} />
+
+        {/* ───────── 상세 옵션 ───────── */}
+        <Route path="/option/:itemId" element={<MegaOption />} />
+
+        {/* ───────── 기타 페이지 ───────── */}
+        <Route path="/cart"    element={<MegaCart />} />     {/* 🆕 추가 */}
+        <Route path="/pay"  element={<PaymentPage />} />
+        <Route path="/options" element={<div>추가 옵션 페이지</div>} />
+        <Route path="/setting" element={<div>설정 페이지</div>} />
+
+        {/* ───────── 모든 미매칭 경로 → 홈 ───────── */}
+        <Route path="*" element={<Navigate to="/menu/coffee" replace />} />
       </Routes>
     </BrowserRouter>
   );

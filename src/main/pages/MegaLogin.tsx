@@ -1,7 +1,7 @@
 import React, { useState, useEffect, ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../style/megaStyle.css';
-import BackIcon from '../../components/BackIcon';
+import BackIcon from '../components/BackIcon';
 
 
 const MegaLogin: React.FC = () => {
