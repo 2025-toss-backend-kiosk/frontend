@@ -119,6 +119,7 @@
   font-weight: bold;
   font-size: 12px;
   padding-top: 30px;
+  margin-top: -10px;
 }
 input[type="checkbox"] {
   accent-color: #000; /* 체크박스 선택 시 색상 검정색으로 변경하는 간단 코드 */
