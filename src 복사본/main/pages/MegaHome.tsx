@@ -58,14 +58,17 @@ const MegaHome: React.FC = () => {
             items.map((item) => (
               <div
                 key={item.id}
-                className="product-card"               // sold-out 처리 제거
-                onClick={() => navigate(`/option/${item.id}`)}  // soldout 체크 제거
+                className={`product-card ${item.soldout ? 'sold-out' : ''}`}
+                onClick={() =>
+                  !item.soldout && navigate(`/option/${item.id}`)
+                }
               >
                 <img
                   src={item.image}
                   alt={item.name}
                   className="product-image"
                 />
+                {item.soldout && <div className="sold-label">일시품절</div>}
                 <div className="product-name">{item.name}</div>
                 <div className="product-price">
                   {item.price.toLocaleString()} 원

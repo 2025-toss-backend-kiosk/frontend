@@ -5,7 +5,7 @@ import MegaHome from "../main/pages/MegaHome";
 import MegaFirstLogin from "../main/pages/MegaFirstLogin";
 import MegaLogin from "../main/pages/MegaLogin";
 import MegaOption from "../main/pages/MegaOption";
-import MegaCart from "../main/pages/MegaCart";  
+import MegaCart from "../main/pages/MegaCart";       // 🆕 장바구니 페이지
 import PaymentPage from "../main/pages/PaymentPage";
 import SettingsPage   from "../main/pages/SettingsPage";
 import PointsPage   from "../main/pages/PointsPage";
@@ -26,7 +26,7 @@ export default function AppRouter() {
         <Route path="/option/:itemId" element={<MegaOption />} />
 
         {/* ───────── 기타 페이지 ───────── */}
-        <Route path="/cart"    element={<MegaCart />} /> 
+        <Route path="/cart"    element={<MegaCart />} />     {/* 🆕 추가 */}
         <Route path="/pay"  element={<PaymentPage />} />
         <Route path="/options" element={<div>추가 옵션 페이지</div>} />
         <Route path="/setting" element={<SettingsPage />} />

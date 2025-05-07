@@ -37,6 +37,7 @@ const MegaLogin: React.FC = () => {
 
   // “인증번호 발송” 버튼 활성화
   useEffect(() => {
+    // 숫자만 추출했을 때 10자리 이상이면 활성
     setSendActive(phone.replace(/\D/g, '').length >= 10);
   }, [phone]);
 
@@ -100,16 +101,19 @@ const MegaLogin: React.FC = () => {
 
   // 로그인 or 회원가입
   const handleLoginOrJoin = async () => {
+    // 필수 인증 및 약관 체크
     if (!isVerified || !checks.terms || !checks.privacy || !checks.thirdParty) {
       alert('인증 및 필수 약관 동의를 완료해주세요.');
       return;
     }
 
     try {
+      // 기존 회원 로그인 시도
       const token = await login(phone);
       localStorage.setItem('token', token);
       alert('로그인 성공!');
     } catch {
+      // 로그인 실패 → 회원가입
       const randomName = generateRandomName();
       try {
         const token = await join(phone, randomName);
@@ -195,7 +199,8 @@ const MegaLogin: React.FC = () => {
               checked={allChecked}
               onChange={handleAllCheck}
             /> 전체 동의
-          </label><br />
+          </label>
+          <br />
           <label className="terms">
             <input
               type="checkbox"
@@ -213,15 +218,6 @@ const MegaLogin: React.FC = () => {
             /> 개인정보 처리방침 (필수)
           </label>
           <div className="lookup2">전문보기</div>
-
-          <div className="promise-section">
-            <div className="promise">개인정보 수집</div>  
-            <div className="promise2">
-              목적 : 스탬프 적립, 쿠폰 사용 및 취소 정보, CS신청정보<br />
-              항목 : 휴대전화번호<br />
-              보유기간 : 회원탈퇴 즉시 또는 이용 목적 달성 즉시 파기
-            </div>
-          </div>
 
           <label className="third-party">
             <input
