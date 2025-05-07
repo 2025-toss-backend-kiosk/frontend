@@ -2,8 +2,8 @@ import React from "react";
 import "../style/megaStyle.css";
 
 interface CartConfirmProps {
-  onYes: () => void;   // /cart
-  onNo:  () => void;   // 추가 상품 모달
+  onYes: () => void;  
+  onNo:  () => void;  
 }
 
 const CartConfirmModal: React.FC<CartConfirmProps> = ({ onYes, onNo }) => (

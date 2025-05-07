@@ -9,26 +9,39 @@ import kakaoIcon from "../images/kakao.png";
 import naverIcon from "../images/naver.png";
 import cardIcon  from "../images/card.png";
 
+import DepositConfirmModal    from "../components/DepositConfirmModal";
+import EarnPointsModal       from "../components/EarnPointsModal";
+import PaymentMethodModal    from "../components/PaymentMethodModal";
+import PaymentCompleteModal  from "../components/PaymentCompleteModal";
+
 const allProd = Object.values(productData).flat();
 
 const PaymentPage: React.FC = () => {
   const nav = useNavigate();
   const { items } = useCart();
+
+  // 모달 상태
+  const [showDeposit, setShowDeposit] = useState(false);
+  const [showPhone,   setShowPhone]   = useState(false);
+  const [phoneInput,  setPhoneInput]  = useState("");
+  const [showPM,      setShowPM]      = useState(false);
+  const [showDone,    setShowDone]    = useState(false);
+
   const [expanded, setExpanded] = useState(true);
   const [method,   setMethod]   = useState<"kakao"|"naver"|"card"|"">("");
 
   // 총액 계산
   const total = items.reduce((sum, ci) => {
-    const info = allProd.find((p) => p.id === ci.id);
+    const info = allProd.find(p => p.id === ci.id);
     return info ? sum + info.price * ci.qty : sum;
   }, 0);
   const discount  = 0;
   const payAmount = total - discount;
 
-  // 첫 번째 상품 이름 (없으면 빈 문자열)
+  // 첫번째 상품 이름
   const firstName =
     items.length > 0
-      ? allProd.find((p) => p.id === items[0].id)?.name ?? ""
+      ? allProd.find(p => p.id === items[0].id)?.name ?? ""
       : "";
 
   return (
@@ -45,8 +58,10 @@ const PaymentPage: React.FC = () => {
         className="payment-summary-header"
         onClick={() => setExpanded(!expanded)}
       >
-        <span style={{ color: '#2D73FF' }} className="summary-label">주문 상품</span>
-        <span style={{ color: '#2D73FF' }} className="summary-toggle">
+        <span className="summary-label" style={{ color: "#2D73FF" }}>
+          주문 상품
+        </span>
+        <span className="summary-toggle" style={{ color: "#2D73FF" }}>
           {items.length > 1
             ? `${firstName} 외 ${items.length - 1}건`
             : firstName}
@@ -58,15 +73,11 @@ const PaymentPage: React.FC = () => {
       {expanded && (
         <ul className="summary-list">
           {items.map((ci, i) => {
-            const info = allProd.find((p) => p.id === ci.id);
+            const info = allProd.find(p => p.id === ci.id);
             if (!info) return null;
             return (
               <li key={i} className="summary-item">
-                <img
-                  src={info.image}
-                  alt={info.name}
-                  className="summary-thumb"
-                />
+                <img src={info.image} alt={info.name} className="summary-thumb" />
                 <span className="summary-name">{info.name}</span>
                 <span className="summary-qty">{ci.qty} 개</span>
                 <span className="summary-price">
@@ -120,9 +131,47 @@ const PaymentPage: React.FC = () => {
         </div>
       </div>
 
-      <button className="payment-btn" onClick={() => nav("/cart")}>
+      <button
+        className="payment-btn"
+        onClick={() => setShowDeposit(true)}
+      >
         결제하기
       </button>
+
+      {/* ① 적립 확인 */}
+      {showDeposit && (
+        <DepositConfirmModal
+          onYes={() => { setShowDeposit(false); setShowPhone(true); }}
+          onNo={()  => { setShowDeposit(false); setShowPM(true); }}
+        />
+      )}
+
+      {/* ② 번호 입력 */}
+      {showPhone && (
+        <EarnPointsModal
+          phone={phoneInput}
+          onKey={k => setPhoneInput(prev => prev + k)}
+          onBack={() => setPhoneInput(prev => prev.slice(0, -1))}
+          onSubmit={() => { setShowPhone(false); setShowPM(true); }}
+        />
+      )}
+
+      {/* ③ 결제 모달 */}
+      {showPM && (
+        <PaymentMethodModal
+          amount={payAmount}
+          onCancel={() => setShowPM(false)}
+          onApprove={() => { setShowPM(false); setShowDone(true); }}
+        />
+      )}
+
+      {/* ④ 결제 완료 */}
+      {showDone && (
+        <PaymentCompleteModal
+          onHome={() => nav("/menu/coffee")}
+          onCancel={() => { setShowDone(false); setShowPM(true); }}
+        />
+      )}
     </div>
   );
 };

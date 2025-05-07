@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import "../style/megaStyle.css";
 
 interface DisposableModalProps {
-  onEat: () => void;   // 먹고가기
-  onTake: () => void;  // 포장하기
+  onEat: () => void;  
+  onTake: () => void;  
 }
 
 const checkList = ["선택안함", "포크/나이프", "캐리어/봉투", "직접 가져 갈게요"];
@@ -21,7 +21,7 @@ const DisposableModal: React.FC<DisposableModalProps> = ({ onEat, onTake }) => {
           일회용품 필요여부를 선택해 주세요
         </h3>
 
-        {/* 체크박스 리스트 */}
+      
         {checkList.map((text) => (
           <label key={text} style={{ display: "flex", gap: 8, margin: "8px 0" }}>
             <input

@@ -2,8 +2,8 @@ import React from "react";
 import "../style/megaStyle.css";
 
 interface ConfirmModalProps {
-  onMore: () => void;   // 예  → 메뉴 화면
-  onPay:  () => void;   // 아니요 → 결제 화면
+  onMore: () => void;  
+  onPay:  () => void;  
 }
 
 const ConfirmModal: React.FC<ConfirmModalProps> = ({ onMore, onPay }) => (
