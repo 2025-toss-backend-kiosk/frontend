@@ -1,7 +1,7 @@
 // src/main/pages/MegaOption.tsx
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { productData } from "../data/products";
+import api from "../../api/axios";
 import { useCart } from "../../store/CartContext";
 import BackIcon from "../components/BackIcon";
 import CartIcon from "../components/CartIcon";
@@ -10,30 +10,60 @@ import DisposableModal from "../components/DisposableModal";
 import CartConfirmModal from "../components/CartConfirmModal";
 import ConfirmModal from "../components/ConfirmModal";
 import "../style/megaStyle.css";
+import { productData } from "../data/products";
+
+type MenuItem = {
+  menuItemId: string;
+  name: string;
+  basePrice: number;
+  category: string;
+};
 
 const MegaOption: React.FC = () => {
   const { itemId } = useParams<{ itemId: string }>();
   const nav = useNavigate();
   const { addItem } = useCart();
 
-  /* ───── state ───── */
+  // ───── state
   const [count, setCount] = useState(1);
-  const [showOpt,  setOpt]  = useState(false);  // 옵션 모달
-  const [showDisp, setDisp] = useState(false);  // 일회용품 모달
-  const [showAsk,  setAsk]  = useState(false);  // 장바구니 확인 모달
-  const [showMore, setMore] = useState(false);  // 추가 상품 모달
+  const [showOpt, setOpt] = useState(false);
+  const [showDisp, setDisp] = useState(false);
+  const [showAsk, setAsk] = useState(false);
+  const [showMore, setMore] = useState(false);
+  const [item, setItem] = useState<MenuItem | null>(null);
+  const [error, setError] = useState("");
 
-  /* ───── 상품 ───── */
-  const item = Object.values(productData).flat().find(p => p.id === itemId);
-  if (!item)        return <p>존재하지 않는 상품입니다.</p>;
-  if (item.soldout) return <p>품절된 상품입니다.</p>;
+  // ───── 이미지 매핑 (name → image)
+  const imageMap = useMemo(() => {
+    const map: { [name: string]: string } = {};
+    Object.values(productData).flat().forEach(p => {
+      map[p.name] = p.image;
+    });
+    return map;
+  }, []);
 
-  const total     = item.price * count;
-  const hasOption = ["americano", "cookiefrappe"].includes(item.id);
+  // ───── 메뉴 상세 API 호출
+  useEffect(() => {
+    if (!itemId) return;
+    api.get(`/menus/${itemId}`)
+      .then(res => setItem(res.data))
+      .catch(() => setError("메뉴 정보를 불러오지 못했습니다."));
+  }, [itemId]);
 
-  /* ───── 장바구니 추가 ───── */
+  if (error)   return <p>{error}</p>;
+  if (!item)   return <p>로딩 중...</p>;
+
+  const total     = item.basePrice * count;
+  const hasOption = ["아메리카노", "쿠키 프라페"].includes(item.name);
+  const image     = imageMap[item.name];
+
+  // ───── 장바구니 추가
   const addCart = (qty: number, opts: Record<string, any> = {}) =>
-    addItem({ id: item.id, qty, opts: { ...item, ...opts, unitPrice: item.price } });
+    addItem({
+      id: item.menuItemId,           // 장바구니에는 UUID 저장
+      qty,
+      opts: { ...opts, unitPrice: item.basePrice }
+    });
 
   /* 주문하기 → 일회용품 모달 */
   const handleOrder = () => {
@@ -45,7 +75,7 @@ const MegaOption: React.FC = () => {
   const afterOption = (qty: number, opts: Record<string, any>) => {
     addCart(qty, opts);
     setOpt(false);
-    setAsk(true);        // 장바구니 이동 여부 모달
+    setAsk(true);
   };
 
   /* 장바구니 담기 */
@@ -56,22 +86,21 @@ const MegaOption: React.FC = () => {
 
   return (
     <>
-      {/* ───── 본 화면 ───── */}
       <div className="option-page">
         <div className="option-header">
           <BackIcon />
           <CartIcon />
         </div>
 
-        <img src={item.image} alt={item.name} className="option-image" />
+        {image && <img src={image} alt={item.name} className="option-image" />}
         <h3 className="option-name">{item.name}</h3>
 
         {/* 수량 + 단가 */}
         <div className="option-amount-row">
-          <button className="qty-btn" onClick={() => count>1 && setCount(count-1)}>−</button>
+          <button className="qty-btn" onClick={() => count > 1 && setCount(count - 1)}>−</button>
           <span>{count}</span>
-          <button className="qty-btn" onClick={() => setCount(count+1)}>＋</button>
-          <span className="price">{item.price.toLocaleString()}원</span>
+          <button className="qty-btn" onClick={() => setCount(count + 1)}>＋</button>
+          <span className="price">{item.basePrice.toLocaleString()}원</span>
         </div>
 
         {/* 총 상품금액 */}
@@ -98,8 +127,8 @@ const MegaOption: React.FC = () => {
       {/* ───── 모달들 ───── */}
       {showOpt && (
         <OptionModal
-          itemId={item.id}
-          unitPrice={item.price}
+          itemId={item.menuItemId}
+          unitPrice={item.basePrice}
           onClose={() => setOpt(false)}
           onAddCart={afterOption}
         />
@@ -116,16 +145,16 @@ const MegaOption: React.FC = () => {
         <CartConfirmModal
           onYes={() => nav("/cart")}
           onNo={() => {
-            setAsk(false);   // 장바구니 모달 닫기
-            setMore(true);   // 추가 상품 모달 열기
+            setAsk(false);
+            setMore(true);
           }}
         />
       )}
 
       {showMore && (
         <ConfirmModal
-          onMore={() => nav("/menu/coffee")} // 계속 담기
-          onPay={()  => nav("/pay")}         // 바로 결제
+          onMore={() => nav("/menu/coffee")}
+          onPay={()  => nav("/pay")}
         />
       )}
     </>

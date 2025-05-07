@@ -1,11 +1,13 @@
 const API_BASE = "http://localhost:8080/api/auth";
 
+// 1. 인증번호 요청
 export const requestAuthCode = async (phone: string): Promise<void> => {
   const res = await fetch(`${API_BASE}/phones`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include", // 🔥 CORS + 인증 연동 필수
     body: JSON.stringify({ phone }),
   });
 
@@ -15,6 +17,7 @@ export const requestAuthCode = async (phone: string): Promise<void> => {
   }
 };
 
+// 2. 인증번호 검증
 export const verifyAuthCode = async (
   phone: string,
   code: string
@@ -24,6 +27,7 @@ export const verifyAuthCode = async (
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify({ phone, code }),
   });
 
@@ -35,12 +39,14 @@ export const verifyAuthCode = async (
   return res.json();
 };
 
+// 3. 로그인
 export const login = async (phone: string): Promise<string> => {
   const res = await fetch(`${API_BASE}/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify({ phone }),
   });
 
@@ -53,12 +59,14 @@ export const login = async (phone: string): Promise<string> => {
   return data.token;
 };
 
+// 4. 회원가입
 export const join = async (phone: string, nickname: string): Promise<string> => {
   const res = await fetch(`${API_BASE}/join`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify({ phone, nickname }),
   });
 
