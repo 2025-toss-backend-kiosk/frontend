@@ -1,24 +1,54 @@
-import React from "react";
+// src/main/pages/MegaCart.tsx
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../../api/axios";
 import { useCart } from "../../store/CartContext";
 import { productData } from "../data/products";
 import BackIcon from "../components/BackIcon";
 import "../style/megaStyle.css";
 
-const allProd = Object.values(productData).flat();
+type MenuItem = {
+  menuItemId: string;
+  name: string;
+  basePrice: number;
+};
 
 const MegaCart: React.FC = () => {
   const nav = useNavigate();
   const { items, changeQty, removeItem } = useCart();
 
+  const [menuMap, setMenuMap] = useState<Record<string, MenuItem>>({});
+  const [error,   setError]   = useState("");
+
+  // ───── 모든 메뉴 리스트 한 번만 가져와 Map 생성
+  useEffect(() => {
+    api.get<MenuItem[]>("/menus")
+      .then(res => {
+        const map: Record<string, MenuItem> = {};
+        res.data.forEach(m => { map[m.menuItemId] = m; });
+        setMenuMap(map);
+      })
+      .catch(() => setError("메뉴 정보를 불러오지 못했습니다."));
+  }, []);
+
+  // ───── 이름 → 이미지 매핑
+  const imageMap = useMemo(() => {
+    const map: Record<string, string> = {};
+    Object.values(productData).flat().forEach(p => { map[p.name] = p.image; });
+    return map;
+  }, []);
+
+  // ───── 총액 계산
   const total = items.reduce((sum, ci) => {
-    const info = allProd.find(p => p.id === ci.id);
-    return info ? sum + info.price * ci.qty : sum;
+    const info = menuMap[ci.id];
+    return info ? sum + info.basePrice * ci.qty : sum;
   }, 0);
+
+  if (error) return <p>{error}</p>;
 
   return (
     <div className="cart-page">
-      {/* ─── 헤더 ─── */}
+      {/* 헤더 */}
       <header className="cart-header">
         <BackIcon />
         <span className="cart-title">주문하기</span>
@@ -27,21 +57,22 @@ const MegaCart: React.FC = () => {
       <section className="brand-bar">메가MGC커피</section>
       <h4 className="cart-sub">주문상품</h4>
 
-      {/* ─── 상품 리스트 ─── */}
+      {/* 상품 리스트 */}
       <ul className="cart-list">
         {items.map((ci, idx) => {
-          const info = allProd.find(p => p.id === ci.id);
+          const info = menuMap[ci.id];
           if (!info) return null;
 
-          /* 옵션 요약: 문자열 값만 뽑아 두 줄까지 표시 */
-          const optTxt = Object.values(ci.opts)
+          const thumb = imageMap[info.name];
+
+          // 옵션 요약 (문자열 값 최대 2줄)
+          const optTxt = Object.values(ci.opts || {})
             .filter(v => typeof v === "string" && v)
             .slice(0, 2) as string[];
 
           return (
             <li key={idx} className="cart-item">
-              {/* 썸네일 */}
-              <img src={info.image} alt={info.name} className="cart-thumb" />
+              {thumb && <img src={thumb} alt={info.name} className="cart-thumb" />}
 
               {/* 이름 + 옵션 + 수량 컨트롤 */}
               <div className="cart-info">
@@ -59,7 +90,7 @@ const MegaCart: React.FC = () => {
 
               {/* 개별 합계 */}
               <span className="cart-price">
-                {(ci.qty * info.price).toLocaleString()} 원
+                {(ci.qty * info.basePrice).toLocaleString()} 원
               </span>
 
               {/* 삭제 */}
@@ -69,13 +100,13 @@ const MegaCart: React.FC = () => {
         })}
       </ul>
 
-      {/* ─── 총액 ─── */}
+      {/* 총액 */}
       <div className="cart-total">
         <span className="cart-total-label">상품금액</span>
-        <strong style={{ color: 'red' }}>{total.toLocaleString()} 원</strong>
+        <strong style={{ color: "red" }}>{total.toLocaleString()} 원</strong>
       </div>
 
-      {/* ─── 결제 버튼 ─── */}
+      {/* 결제 버튼 */}
       <button className="cart-pay-btn" onClick={() => nav("/pay")}>
         주문하기
       </button>
