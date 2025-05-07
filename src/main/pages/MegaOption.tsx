@@ -72,7 +72,7 @@ const MegaOption: React.FC = () => {
 
         {hasOption && (
           <div className="option-extra" onClick={() => setShowOpt(true)}>
-            <span className="plus-option">추가 옵션</span>
+            <span className="plus-option">옵션</span>
             <span className="plus-option2">〉</span>
           </div>
         )}
